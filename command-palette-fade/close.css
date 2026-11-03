@@ -1,0 +1,70 @@
+/* Command Palette Fade: close animation.
+ * command-palette-fade.uc.mjs sets [mod-cmdpalettefade-closing] and holds the
+ * bar open until these animations finish.
+ */
+
+@keyframes mod-cmdpalettefade-close-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes mod-cmdpalettefade-close-shrink {
+  to {
+    scale: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #urlbar[zen-floating-urlbar="true"][mod-cmdpalettefade-closing] {
+    & > :is(.urlbar-background, .urlbar-input-container, .urlbarView) {
+      animation-name: mod-cmdpalettefade-close-fade;
+      animation-duration: var(--mod-cmdpalettefade-close-duration, 180ms);
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+      animation-fill-mode: forwards;
+    }
+
+    /* stylelint-disable-next-line media-query-no-invalid */
+    @media -moz-pref("mod.cmdpalettefade.grow") {
+      animation-name: mod-cmdpalettefade-close-shrink;
+      animation-duration: var(--mod-cmdpalettefade-close-duration, 180ms);
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+      animation-fill-mode: forwards;
+    }
+  }
+}
+
+/* Firefox drops [open] as soon as the results close, before Zen tears the
+ * popover down, so the [open]-only floating layout from Zen's zen-omnibox.css
+ * and Firefox's urlbar.css is mirrored here to keep the bar in place while it
+ * animates out. Keep in sync with `#urlbar[open][zen-floating-urlbar="true"]`. */
+#urlbar[zen-floating-urlbar="true"][mod-cmdpalettefade-closing] {
+  pointer-events: none !important;
+  max-width: unset !important;
+  --urlbar-container-height: 62px !important;
+  --urlbar-margin-inline: 12px !important;
+  min-width: min(90%, 62rem) !important;
+  width: var(--zen-urlbar-width, min(90%, 62rem)) !important;
+  font-size: 1.15em !important;
+  @media (-moz-platform: macos) {
+    font-size: 1.5em !important;
+  }
+  top: var(--zen-urlbar-top) !important;
+  translate: -50% 0% !important;
+  left: 50% !important;
+
+  /* Only when the results were actually showing before the close, so mods
+   * that hide them (e.g. No Top Sites) stay respected. */
+  &[mod-cmdpalettefade-closing="with-results"] > .urlbarView {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  &[mod-cmdpalettefade-closing="with-results"] > .urlbarView > .urlbarView-results {
+    border-top: 1px solid var(--urlbarview-separator-color) !important;
+  }
+
+  & #identity-icon-box {
+    margin-inline: 2px 4px !important;
+  }
+}

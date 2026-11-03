@@ -1,0 +1,20 @@
+{
+  "id": "3b1848e3-0d80-4c3b-8a80-29f74d3d77c7",
+  "name": "Command Palette Fade",
+  "description": "Arc-style open and close animations for Zen's floating URL bar (Cmd+T): fade and grow in, fade and shrink out.",
+  "author": "MatheusChein",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MatheusChein/zen-mods/tree/main/command-palette-fade",
+  "image": "https://raw.githubusercontent.com/MatheusChein/zen-mods/main/command-palette-fade/image.png",
+  "style": {
+    "chrome": "chrome.css"
+  },
+  "preferences": "preferences.json",
+  "scripts": {
+    "command-palette-fade.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "supportsUnload": true,
+  "tags": ["urlbar", "animation", "arc"]
+}

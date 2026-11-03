@@ -1,0 +1,22 @@
+[
+  {
+    "property": "mod.cmdpalettefade.open-duration",
+    "label": "Open animation duration (CSS time, e.g. 160ms or 0.2s)",
+    "type": "string",
+    "defaultValue": "160ms",
+    "placeholder": "160ms"
+  },
+  {
+    "property": "mod.cmdpalettefade.close-duration",
+    "label": "Close animation duration (CSS time, e.g. 180ms or 0.2s)",
+    "type": "string",
+    "defaultValue": "180ms",
+    "placeholder": "180ms"
+  },
+  {
+    "property": "mod.cmdpalettefade.grow",
+    "label": "Scale between 90% and full size along with the fade",
+    "type": "checkbox",
+    "defaultValue": true
+  }
+]

@@ -1,0 +1,38 @@
+/* Command Palette Fade
+ * Fades and grows the floating URL bar in when it opens (e.g. via Cmd+T).
+ */
+
+@keyframes mod-cmdpalettefade-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mod-cmdpalettefade-grow-in {
+  from {
+    scale: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #urlbar[zen-floating-urlbar="true"] {
+    transform-origin: 50% 31px;
+
+    /* Fading the children instead of #urlbar itself keeps the acrylic
+     * backdrop-filter on .urlbar-background working during the fade. */
+    & > :is(.urlbar-background, .urlbar-input-container, .urlbarView) {
+      animation-name: mod-cmdpalettefade-fade-in;
+      animation-duration: var(--mod-cmdpalettefade-open-duration, 160ms);
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* `scale` is used rather than `transform` so Zen's own centering
+     * (`translate: -50% 0%`) is left untouched. */
+    /* stylelint-disable-next-line media-query-no-invalid */
+    @media -moz-pref("mod.cmdpalettefade.grow") {
+      animation-name: mod-cmdpalettefade-grow-in;
+      animation-duration: var(--mod-cmdpalettefade-open-duration, 160ms);
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+  }
+}
