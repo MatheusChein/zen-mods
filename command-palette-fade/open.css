@@ -1,6 +1,21 @@
 /* Command Palette Fade
  * Fades and grows the floating URL bar in when it opens (e.g. via Cmd+T).
+ *
+ * Other mods restyle the URL bar too (e.g. Arc 2.0), often with !important.
+ * Every rule here that has to win is !important and starts with
+ * #urlbar#urlbar#urlbar, a specificity no other mod's URL bar rule reaches,
+ * so it wins whatever the load order. (A cascade layer doesn't help: in
+ * Sine's user stylesheet, layered !important rules lose to unlayered ones.)
+ * Only motion is claimed this way, so themes keep their look.
  */
+
+/* Drives the grow when a theme pins `scale` with !important, which would
+ * otherwise freeze a plain `scale` animation. */
+@property --mod-cmdpalettefade-scale {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
 
 @keyframes mod-cmdpalettefade-fade-in {
   from {
@@ -14,25 +29,58 @@
   }
 }
 
+@keyframes mod-cmdpalettefade-grow-in-pinned {
+  from {
+    --mod-cmdpalettefade-scale: 0.9;
+  }
+}
+
+/* Other mods' motion on the floating bar is switched off, so only these
+ * animations play. Zen and Firefox don't animate #urlbar itself (Zen's
+ * search-mode pulse is on ::before), and Zen positions the bar with
+ * `translate`, not `transform`. */
+#urlbar#urlbar#urlbar[zen-floating-urlbar="true"] {
+  animation-name: none !important;
+  /* e.g. Arc 2.0's 2px hover lift */
+  transform: none !important;
+
+  /* e.g. Arc 2.0's results fade and per-result pop-in. Collapsed rather
+   * than removed, so animations that fill forwards still land on their end
+   * state (Arc's rows start at opacity 0). */
+  & :is(#urlbar-results, .urlbarView-row, .urlbarView-type-icon) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  #urlbar[zen-floating-urlbar="true"] {
-    transform-origin: 50% 31px;
+  #urlbar#urlbar#urlbar[zen-floating-urlbar="true"] {
+    transform-origin: 50% 31px !important;
 
     /* Fading the children instead of #urlbar itself keeps the acrylic
      * backdrop-filter on .urlbar-background working during the fade. */
     & > :is(.urlbar-background, .urlbar-input-container, .urlbarView) {
-      animation-name: mod-cmdpalettefade-fade-in;
-      animation-duration: var(--mod-cmdpalettefade-open-duration, 160ms);
-      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+      animation-name: mod-cmdpalettefade-fade-in !important;
+      animation-duration: var(--mod-cmdpalettefade-open-duration, 160ms) !important;
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
     }
 
     /* `scale` is used rather than `transform` so Zen's own centering
      * (`translate: -50% 0%`) is left untouched. */
     /* stylelint-disable-next-line media-query-no-invalid */
     @media -moz-pref("mod.cmdpalettefade.grow") {
-      animation-name: mod-cmdpalettefade-grow-in;
-      animation-duration: var(--mod-cmdpalettefade-open-duration, 160ms);
-      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+      animation-name: mod-cmdpalettefade-grow-in !important;
+      animation-duration: var(--mod-cmdpalettefade-open-duration, 160ms) !important;
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+
+      /* Arc 2.0's arcline URL bar pins `scale` with !important. Animating a
+       * custom property gets around that, but runs on the main thread
+       * instead of the compositor, so it's only used there. */
+      /* stylelint-disable-next-line media-query-no-invalid */
+      @media -moz-pref("arcline.url.bar", 1) {
+        animation-name: mod-cmdpalettefade-grow-in-pinned !important;
+        scale: var(--mod-cmdpalettefade-scale) !important;
+      }
     }
   }
 }

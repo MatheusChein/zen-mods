@@ -1,6 +1,7 @@
 /* Command Palette Fade: close animation.
  * command-palette-fade.uc.mjs sets [mod-cmdpalettefade-closing] and holds the
- * bar open until these animations finish.
+ * bar open until these animations finish. Same #urlbar#urlbar#urlbar and
+ * !important approach as open.css, for the same reason.
  */
 
 @keyframes mod-cmdpalettefade-close-fade {
@@ -15,43 +16,63 @@
   }
 }
 
+@keyframes mod-cmdpalettefade-close-shrink-pinned {
+  to {
+    --mod-cmdpalettefade-scale: 0.9;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  #urlbar[zen-floating-urlbar="true"][mod-cmdpalettefade-closing] {
+  #urlbar#urlbar#urlbar[zen-floating-urlbar="true"][mod-cmdpalettefade-closing] {
     & > :is(.urlbar-background, .urlbar-input-container, .urlbarView) {
-      animation-name: mod-cmdpalettefade-close-fade;
-      animation-duration: var(--mod-cmdpalettefade-close-duration, 180ms);
-      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
-      animation-fill-mode: forwards;
+      animation-name: mod-cmdpalettefade-close-fade !important;
+      animation-duration: var(--mod-cmdpalettefade-close-duration, 180ms) !important;
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
+      animation-fill-mode: forwards !important;
     }
 
     /* stylelint-disable-next-line media-query-no-invalid */
     @media -moz-pref("mod.cmdpalettefade.grow") {
-      animation-name: mod-cmdpalettefade-close-shrink;
-      animation-duration: var(--mod-cmdpalettefade-close-duration, 180ms);
-      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
-      animation-fill-mode: forwards;
+      animation-name: mod-cmdpalettefade-close-shrink !important;
+      animation-duration: var(--mod-cmdpalettefade-close-duration, 180ms) !important;
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
+      animation-fill-mode: forwards !important;
+
+      /* See open.css. */
+      /* stylelint-disable-next-line media-query-no-invalid */
+      @media -moz-pref("arcline.url.bar", 1) {
+        animation-name: mod-cmdpalettefade-close-shrink-pinned !important;
+      }
     }
   }
 }
 
 /* Firefox drops [open] as soon as the results close, before Zen tears the
- * popover down, so the [open]-only floating layout from Zen's zen-omnibox.css
- * and Firefox's urlbar.css is mirrored here to keep the bar in place while it
- * animates out. Keep in sync with `#urlbar[open][zen-floating-urlbar="true"]`. */
-#urlbar[zen-floating-urlbar="true"][mod-cmdpalettefade-closing] {
+ * popover down, which also drops every [open]-only style: Zen's floating
+ * layout and any theme's look. The script snapshots the open bar's layout and
+ * background into --mod-cmdpalettefade-snap-* custom properties just before
+ * that and they're held here while the bar animates out. This also overrides
+ * rules that only apply to a closed bar, like Arc 2.0's 39px height in
+ * single-toolbar mode.
+ *
+ * The fallbacks mirror Zen's `#urlbar[open][zen-floating-urlbar="true"]` from
+ * zen-omnibox.css, for the rare close that doesn't go through the results
+ * view (and so has no snapshot). */
+#urlbar#urlbar#urlbar[zen-floating-urlbar="true"][mod-cmdpalettefade-closing] {
   pointer-events: none !important;
-  max-width: unset !important;
-  --urlbar-container-height: 62px !important;
-  --urlbar-margin-inline: 12px !important;
-  min-width: min(90%, 62rem) !important;
-  width: var(--zen-urlbar-width, min(90%, 62rem)) !important;
-  font-size: 1.15em !important;
+  --urlbar-container-height: var(--mod-cmdpalettefade-snap-bar-urlbar-container-height, 62px) !important;
+  --urlbar-margin-inline: var(--mod-cmdpalettefade-snap-bar-urlbar-margin-inline, 12px) !important;
+  width: var(--mod-cmdpalettefade-snap-bar-width, var(--zen-urlbar-width, min(90%, 62rem))) !important;
+  min-width: var(--mod-cmdpalettefade-snap-bar-width, min(90%, 62rem)) !important;
+  max-width: var(--mod-cmdpalettefade-snap-bar-width, none) !important;
+  height: var(--mod-cmdpalettefade-snap-bar-height, auto) !important;
+  font-size: var(--mod-cmdpalettefade-snap-bar-font-size, 1.15em) !important;
   @media (-moz-platform: macos) {
-    font-size: 1.5em !important;
+    font-size: var(--mod-cmdpalettefade-snap-bar-font-size, 1.5em) !important;
   }
-  top: var(--zen-urlbar-top) !important;
+  top: var(--mod-cmdpalettefade-snap-bar-top, var(--zen-urlbar-top)) !important;
+  left: var(--mod-cmdpalettefade-snap-bar-left, 50%) !important;
   translate: -50% 0% !important;
-  left: 50% !important;
 
   /* Only when the results were actually showing before the close, so mods
    * that hide them (e.g. No Top Sites) stay respected. */
@@ -66,5 +87,22 @@
 
   & #identity-icon-box {
     margin-inline: 2px 4px !important;
+  }
+
+  /* The open background as it was, whatever drew it (Zen's acrylic, or a
+   * theme like Arc 2.0's frosted glass). */
+  &[mod-cmdpalettefade-snapshot] > .urlbar-background {
+    background-color: var(--mod-cmdpalettefade-snap-background-background-color) !important;
+    background-image: var(--mod-cmdpalettefade-snap-background-background-image) !important;
+    backdrop-filter: var(--mod-cmdpalettefade-snap-background-backdrop-filter) !important;
+    box-shadow: var(--mod-cmdpalettefade-snap-background-box-shadow) !important;
+    border-top-left-radius: var(--mod-cmdpalettefade-snap-background-border-top-left-radius) !important;
+    border-top-right-radius: var(--mod-cmdpalettefade-snap-background-border-top-right-radius) !important;
+    border-bottom-right-radius: var(--mod-cmdpalettefade-snap-background-border-bottom-right-radius) !important;
+    border-bottom-left-radius: var(--mod-cmdpalettefade-snap-background-border-bottom-left-radius) !important;
+    outline-color: var(--mod-cmdpalettefade-snap-background-outline-color) !important;
+    outline-style: var(--mod-cmdpalettefade-snap-background-outline-style) !important;
+    outline-width: var(--mod-cmdpalettefade-snap-background-outline-width) !important;
+    outline-offset: var(--mod-cmdpalettefade-snap-background-outline-offset) !important;
   }
 }

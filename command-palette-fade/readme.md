@@ -7,6 +7,10 @@ Arc-style animations for Zen's floating URL bar (the one that opens with `Cmd+T`
 
 The close animation respects mods that hide URL bar results (e.g. No Top Sites): whatever was on screen is what fades out.
 
+## Works with themes
+
+Themes that restyle the URL bar, like Arc 2.0, keep their look: the bar fades out with the same background, blur, size and corners it had while open. Only the motion comes from this mod. Other animations on the floating bar (slide-ins, result pop-ins, hover lifts) are switched off so they don't stack with these.
+
 ## Options
 
 - **Open animation duration**: any CSS time value, e.g. `160ms` (default) or `0.25s`.
