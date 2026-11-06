@@ -1,0 +1,17 @@
+{
+  "id": "bf0079c2-bb2f-4e3f-88c1-39ae0fa77785",
+  "name": "Copy Selected URLs",
+  "description": "Arc-style Cmd+Shift+C with several tabs selected: copies every selected tab's URL, one per line.",
+  "author": "MatheusChein",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MatheusChein/zen-mods/tree/main/copy-selected-urls",
+  "image": "https://raw.githubusercontent.com/MatheusChein/zen-mods/main/copy-selected-urls/image.png",
+  "preferences": "preferences.json",
+  "scripts": {
+    "copy-selected-urls.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "supportsUnload": true,
+  "tags": ["tabs", "clipboard", "shortcut", "arc"]
+}
