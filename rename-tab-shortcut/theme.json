@@ -1,0 +1,17 @@
+{
+  "id": "49493ac6-7c3d-45c8-98bd-289e67111124",
+  "name": "Rename Tab Shortcut",
+  "description": "Arc-style keyboard shortcut to rename the current tab: Cmd+Shift+E, changeable in about:keyboard.",
+  "author": "MatheusChein",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MatheusChein/zen-mods/tree/main/rename-tab-shortcut",
+  "image": "https://raw.githubusercontent.com/MatheusChein/zen-mods/main/rename-tab-shortcut/image.png",
+  "preferences": "preferences.json",
+  "scripts": {
+    "rename-tab-shortcut.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "supportsUnload": true,
+  "tags": ["tabs", "shortcut", "rename", "arc"]
+}

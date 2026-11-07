@@ -1,0 +1,8 @@
+[
+  {
+    "property": "mod.renametabshortcut.override-pages",
+    "label": "Use the shortcut even on pages that have their own (e.g. Cmd+Shift+E in Google Docs)",
+    "type": "checkbox",
+    "defaultValue": true
+  }
+]
