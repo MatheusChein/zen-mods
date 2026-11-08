@@ -1,0 +1,16 @@
+{
+  "id": "eba078dc-9b54-4cb0-a334-296f18b78381",
+  "name": "Zoom Toast",
+  "description": "Arc-style zoom popup: zooming a page shows the new zoom level in a toast at the top right, even with the URL bar closed.",
+  "author": "MatheusChein",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MatheusChein/zen-mods/tree/main/zoom-toast",
+  "image": "https://raw.githubusercontent.com/MatheusChein/zen-mods/main/zoom-toast/image.png",
+  "scripts": {
+    "zoom-toast.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "supportsUnload": true,
+  "tags": ["zoom", "toast", "arc"]
+}
