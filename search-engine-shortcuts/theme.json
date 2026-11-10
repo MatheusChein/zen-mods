@@ -1,0 +1,17 @@
+{
+  "id": "d37baf5d-4c8c-4881-9568-097157d432be",
+  "name": "Search Engine Shortcuts",
+  "description": "A keyboard shortcut for each search engine: opens the URL bar straight into that engine, as if you'd typed its alias. Set them in about:keyboard under \"Search With\".",
+  "author": "MatheusChein",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MatheusChein/zen-mods/tree/main/search-engine-shortcuts",
+  "image": "https://raw.githubusercontent.com/MatheusChein/zen-mods/main/search-engine-shortcuts/image.png",
+  "preferences": "preferences.json",
+  "scripts": {
+    "search-engine-shortcuts.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "supportsUnload": true,
+  "tags": ["search", "shortcut", "urlbar", "arc"]
+}

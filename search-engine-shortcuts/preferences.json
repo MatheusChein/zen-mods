@@ -1,0 +1,8 @@
+[
+  {
+    "property": "mod.searchengineshortcuts.override-pages",
+    "label": "Use the shortcuts even on pages that have their own for the same keys",
+    "type": "checkbox",
+    "defaultValue": true
+  }
+]
