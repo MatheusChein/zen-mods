@@ -1,0 +1,20 @@
+{
+  "id": "49104eb5-7246-459f-ba9f-2fe4d67e6c33",
+  "name": "Search Engine Splash",
+  "description": "Restyles what happens when you pick a search engine in the URL bar (e.g. \"yt\" + space): a splash in the engine's own color (glow, sweep or ripple) and a matching label with the engine's icon.",
+  "author": "MatheusChein",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MatheusChein/zen-mods/tree/main/search-engine-splash",
+  "image": "https://raw.githubusercontent.com/MatheusChein/zen-mods/main/search-engine-splash/image.png",
+  "style": {
+    "chrome": "chrome.css"
+  },
+  "preferences": "preferences.json",
+  "scripts": {
+    "search-engine-splash.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "supportsUnload": true,
+  "tags": ["urlbar", "search", "animation", "arc"]
+}

@@ -1,0 +1,306 @@
+/* Search Engine Splash
+ *
+ * Zen plays its splash on #urlbar::before while `animate-searchmode="true"`
+ * is set (for about a second after you pick an engine), and shows the
+ * engine's name in #urlbar-search-mode-indicator.
+ *
+ * The script sets on #urlbar:
+ *   [mod-searchenginesplash-splash]   glow | sweep | ripple | trace | zen | none
+ *   [mod-searchenginesplash-icon]     when the engine's icon should show
+ *   [mod-searchenginesplash-searching] glow | sweep | ripple | trace, while a
+ *                                     search-mode splash plays (its duration)
+ *   [mod-searchenginesplash-opening]  glow | sweep | ripple | trace, while the
+ *                                     opening splash plays (its duration)
+ *   --mod-searchenginesplash-color       the engine's (or custom) color; unset = accent
+ *   --mod-searchenginesplash-icon        url() of the engine's icon
+ *   --mod-searchenginesplash-open-color  the opening splash's custom color; unset = accent
+ *   --mod-searchenginesplash-search-duration / -open-duration  the two durations
+ *
+ * Each splash plays either for a search mode ([…-searching="x"]) or for the
+ * bar opening ([…-opening="x"]); the script never lets both play at once.
+ * Search splashes don't key on Zen's `animate-searchmode`, which Zen removes
+ * after a fixed second; only "Zen's original" (Zen's own CSS) still does.
+ *
+ * Zen's rules are author-origin and Sine's sheet is user-origin, so every
+ * declaration that overrides Zen needs !important. #urlbar#urlbar keeps these
+ * ahead of other mods' URL bar rules too.
+ */
+
+@property --mod-searchenginesplash-ripple {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+#urlbar {
+  --mod-searchenginesplash-accent: light-dark(
+    var(--zen-primary-color),
+    color-mix(in srgb, var(--zen-primary-color) 70%, white)
+  );
+  --mod-searchenginesplash-c: var(--mod-searchenginesplash-color, var(--mod-searchenginesplash-accent));
+  /* Splash length, from the duration setting (set by the script). */
+  --mod-searchenginesplash-d: var(--mod-searchenginesplash-search-duration, 900ms);
+}
+
+/* While the opening splash plays, it uses its own color. Zen sets the accent
+ * color per Space, so by default it follows the Space's theme. */
+#urlbar[mod-searchenginesplash-opening] {
+  --mod-searchenginesplash-c: var(--mod-searchenginesplash-open-color, var(--mod-searchenginesplash-accent));
+  --mod-searchenginesplash-d: var(--mod-searchenginesplash-open-duration, 900ms);
+}
+
+/* ---------- The engine label ---------- */
+
+#urlbar#urlbar > .urlbar-input-container > #urlbar-search-mode-indicator {
+  gap: 6px;
+  padding: 4px 10px !important;
+  background-color: light-dark(
+    color-mix(in srgb, var(--mod-searchenginesplash-c) 16%, transparent),
+    color-mix(in srgb, var(--mod-searchenginesplash-c) 26%, transparent)
+  ) !important;
+  color: light-dark(
+    color-mix(in srgb, var(--mod-searchenginesplash-c) 70%, black),
+    color-mix(in srgb, var(--mod-searchenginesplash-c) 40%, white)
+  ) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mod-searchenginesplash-c) 40%, transparent) !important;
+}
+
+#urlbar#urlbar[mod-searchenginesplash-icon] > .urlbar-input-container > #urlbar-search-mode-indicator {
+  padding-inline-start: 6px !important;
+
+  &::before {
+    content: "";
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    background: var(--mod-searchenginesplash-icon) center / contain no-repeat;
+    border-radius: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #urlbar#urlbar[searchmode]:is(
+      [mod-searchenginesplash-splash="glow"],
+      [mod-searchenginesplash-splash="sweep"],
+      [mod-searchenginesplash-splash="ripple"],
+      [mod-searchenginesplash-splash="trace"]
+    )
+    > .urlbar-input-container
+    > #urlbar-search-mode-indicator {
+    animation: mod-searchenginesplash-label-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.25) both !important;
+  }
+}
+
+@keyframes mod-searchenginesplash-label-in {
+  from {
+    opacity: 0;
+    scale: 0.8;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* ---------- The splash ---------- */
+
+/* Every choice but "zen" replaces Zen's glow. */
+#urlbar#urlbar:is(
+    [mod-searchenginesplash-splash="sweep"],
+    [mod-searchenginesplash-splash="ripple"],
+    [mod-searchenginesplash-splash="trace"],
+    [mod-searchenginesplash-splash="none"]
+  )[animate-searchmode="true"]::before {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Glow: Zen's idea, in the engine's color, with a crisp ring that fades. */
+#urlbar#urlbar:is([mod-searchenginesplash-searching="glow"], [mod-searchenginesplash-opening="glow"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: mod-searchenginesplash-glow var(--mod-searchenginesplash-d) cubic-bezier(0.25, 0.6, 0.3, 1) both !important;
+}
+
+@keyframes mod-searchenginesplash-glow {
+  0% {
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, var(--mod-searchenginesplash-c) 85%, transparent),
+      0 0 28px 4px color-mix(in srgb, var(--mod-searchenginesplash-c) 60%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, var(--mod-searchenginesplash-c) 0%, transparent),
+      0 0 180px 24px color-mix(in srgb, var(--mod-searchenginesplash-c) 0%, transparent);
+  }
+}
+
+/* Trace: two glowing streaks race along the border, one from the top-left
+ * corner along the top and right edges, the other from the bottom-right corner
+ * along the bottom and left edges, each ending at the opposite corner.
+ *
+ * The script adds <svg id="mod-searchenginesplash-trace"> to #urlbar: three
+ * rects the size of the bar, with the bar's corner radius and
+ * pathLength="100". A rect's outline starts at the top-left (just after the
+ * corner) and runs clockwise, so a dash pattern of "len, 50 - len" draws two
+ * dashes exactly half the outline apart, and they bend around the corners.
+ * Moving the dashes from 0 to 50 takes one from the top-left to the
+ * bottom-right and the other the opposite way, at the same speed.
+ *
+ * --head is where the dashes' heads are (0 -> 50). --grow scales their length,
+ * so the streaks grow out of the starting corners and drain into the far ones.
+ * The three rects are layered tail, body and head, shorter and brighter
+ * toward the front, so each streak tapers. */
+@property --mod-searchenginesplash-trace-head {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --mod-searchenginesplash-trace-grow {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+#mod-searchenginesplash-trace {
+  display: none;
+}
+
+#urlbar#urlbar:is([mod-searchenginesplash-searching="trace"], [mod-searchenginesplash-opening="trace"]) > #mod-searchenginesplash-trace {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 1;
+  fill: none;
+  stroke: var(--mod-searchenginesplash-c);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px var(--mod-searchenginesplash-c))
+    drop-shadow(0 0 10px var(--mod-searchenginesplash-c))
+    drop-shadow(0 0 22px color-mix(in srgb, var(--mod-searchenginesplash-c) 60%, transparent));
+  animation: mod-searchenginesplash-trace var(--mod-searchenginesplash-d) cubic-bezier(0.45, 0, 0.3, 1) both;
+
+  & > rect {
+    /* Gecko rejects unitless calc() here, so the math is in px. pathLength
+     * still applies: 1px is 1% of the outline. A tail is never longer than
+     * the distance its head has traveled, so it doesn't reach back around
+     * the starting corner. */
+    --mod-searchenginesplash-trace-dash: min(
+      var(--mod-searchenginesplash-trace-len) * var(--mod-searchenginesplash-trace-grow) * 1px,
+      var(--mod-searchenginesplash-trace-head) * 1px
+    );
+    stroke-dasharray: var(--mod-searchenginesplash-trace-dash) calc(50px - var(--mod-searchenginesplash-trace-dash));
+    stroke-dashoffset: calc(var(--mod-searchenginesplash-trace-dash) - var(--mod-searchenginesplash-trace-head) * 1px);
+  }
+
+  & > .mod-searchenginesplash-trace-tail {
+    --mod-searchenginesplash-trace-len: 13;
+    stroke-width: 2px;
+    stroke-opacity: 0.45;
+  }
+
+  & > .mod-searchenginesplash-trace-body {
+    --mod-searchenginesplash-trace-len: 7;
+    stroke-width: 2px;
+    stroke-opacity: 0.85;
+  }
+
+  & > .mod-searchenginesplash-trace-head {
+    --mod-searchenginesplash-trace-len: 2.5;
+    stroke-width: 2.5px;
+    stroke: color-mix(in srgb, var(--mod-searchenginesplash-c) 40%, white);
+  }
+}
+
+@keyframes mod-searchenginesplash-trace {
+  0% {
+    --mod-searchenginesplash-trace-head: 0;
+    --mod-searchenginesplash-trace-grow: 0;
+    opacity: 0;
+  }
+  10%,
+  85% {
+    opacity: 1;
+  }
+  35%,
+  70% {
+    --mod-searchenginesplash-trace-grow: 1;
+  }
+  100% {
+    --mod-searchenginesplash-trace-head: 50;
+    --mod-searchenginesplash-trace-grow: 0;
+    opacity: 0;
+  }
+}
+
+/* Sweep and Ripple paint inside the bar: on top of its background, under the
+ * text. .urlbar-background is absolutely positioned, so its ::after fills it. */
+#urlbar#urlbar:is(
+    [mod-searchenginesplash-searching="sweep"],
+    [mod-searchenginesplash-searching="ripple"],
+    [mod-searchenginesplash-opening="sweep"],
+    [mod-searchenginesplash-opening="ripple"]
+  )
+  > .urlbar-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Sweep: a band of color washes across the bar from the label. */
+#urlbar#urlbar:is([mod-searchenginesplash-searching="sweep"], [mod-searchenginesplash-opening="sweep"]) > .urlbar-background::after {
+  background: linear-gradient(
+      100deg,
+      transparent 38%,
+      color-mix(in srgb, var(--mod-searchenginesplash-c) 45%, transparent) 50%,
+      transparent 62%
+    )
+    no-repeat;
+  background-size: 300% 100%;
+  animation: mod-searchenginesplash-sweep var(--mod-searchenginesplash-d) cubic-bezier(0.45, 0, 0.25, 1) both !important;
+}
+
+@keyframes mod-searchenginesplash-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+/* Ripple: a circle of color spreads out from the label and fades. Its center
+ * is the middle of the input row, which stays at the top when results show. */
+#urlbar#urlbar:is([mod-searchenginesplash-searching="ripple"], [mod-searchenginesplash-opening="ripple"]) > .urlbar-background::after {
+  background: radial-gradient(
+    circle at 48px calc(var(--urlbar-container-height, 40px) / 2),
+    color-mix(in srgb, var(--mod-searchenginesplash-c) 40%, transparent) 0,
+    color-mix(in srgb, var(--mod-searchenginesplash-c) 22%, transparent)
+      calc(var(--mod-searchenginesplash-ripple) * 0.75),
+    transparent var(--mod-searchenginesplash-ripple)
+  );
+  animation: mod-searchenginesplash-ripple var(--mod-searchenginesplash-d) cubic-bezier(0.2, 0.7, 0.3, 1) both !important;
+}
+
+@keyframes mod-searchenginesplash-ripple {
+  0% {
+    --mod-searchenginesplash-ripple: 0px;
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    --mod-searchenginesplash-ripple: 900px;
+    opacity: 0;
+  }
+}

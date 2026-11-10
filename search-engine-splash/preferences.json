@@ -1,0 +1,179 @@
+[
+  {
+    "property": "mod.searchenginesplash.splash",
+    "label": "Splash animation when you pick a search engine",
+    "type": "dropdown",
+    "value": "string",
+    "defaultValue": "glow",
+    "options": [
+      {
+        "label": "Glow",
+        "value": "glow"
+      },
+      {
+        "label": "Sweep",
+        "value": "sweep"
+      },
+      {
+        "label": "Ripple",
+        "value": "ripple"
+      },
+      {
+        "label": "Trace (two glows race around the border)",
+        "value": "trace"
+      },
+      {
+        "label": "Zen's original",
+        "value": "zen"
+      },
+      {
+        "label": "None",
+        "value": "none"
+      }
+    ]
+  },
+  {
+    "property": "mod.searchenginesplash.color",
+    "label": "Color of the splash and the engine label",
+    "type": "dropdown",
+    "value": "string",
+    "defaultValue": "engine",
+    "options": [
+      {
+        "label": "Match the search engine's icon",
+        "value": "engine"
+      },
+      {
+        "label": "Zen's accent color",
+        "value": "accent"
+      },
+      {
+        "label": "Custom color",
+        "value": "custom"
+      }
+    ]
+  },
+  {
+    "property": "mod.searchenginesplash.custom-color",
+    "label": "Custom color (any CSS color, e.g. #8b5cf6 or tomato)",
+    "type": "string",
+    "placeholder": "#8b5cf6",
+    "conditions": [
+      {
+        "if": {
+          "property": "mod.searchenginesplash.color",
+          "value": "custom"
+        }
+      }
+    ]
+  },
+  {
+    "property": "mod.searchenginesplash.duration",
+    "label": "Splash duration (e.g. 900ms or 1.5s; doesn't apply to Zen's original)",
+    "type": "string",
+    "placeholder": "900ms",
+    "conditions": [
+      {
+        "not": {
+          "property": "mod.searchenginesplash.splash",
+          "value": "zen"
+        }
+      },
+      {
+        "not": {
+          "property": "mod.searchenginesplash.splash",
+          "value": "none"
+        }
+      }
+    ],
+    "operator": "AND"
+  },
+  {
+    "property": "mod.searchenginesplash.icon",
+    "label": "Show the search engine's icon in the label",
+    "type": "checkbox",
+    "defaultValue": true
+  },
+  {
+    "property": "mod.searchenginesplash.open-splash",
+    "label": "Splash when the URL bar opens",
+    "type": "dropdown",
+    "value": "string",
+    "defaultValue": "off",
+    "options": [
+      {
+        "label": "Off",
+        "value": "off"
+      },
+      {
+        "label": "Glow",
+        "value": "glow"
+      },
+      {
+        "label": "Sweep",
+        "value": "sweep"
+      },
+      {
+        "label": "Ripple",
+        "value": "ripple"
+      },
+      {
+        "label": "Trace (two glows race around the border)",
+        "value": "trace"
+      }
+    ]
+  },
+  {
+    "property": "mod.searchenginesplash.open-color",
+    "label": "Color of the opening splash",
+    "type": "dropdown",
+    "value": "string",
+    "defaultValue": "accent",
+    "options": [
+      {
+        "label": "Zen's accent color (follows each Space's theme)",
+        "value": "accent"
+      },
+      {
+        "label": "Custom color",
+        "value": "custom"
+      }
+    ],
+    "conditions": [
+      {
+        "not": {
+          "property": "mod.searchenginesplash.open-splash",
+          "value": "off"
+        }
+      }
+    ]
+  },
+  {
+    "property": "mod.searchenginesplash.open-custom-color",
+    "label": "Custom color for the opening splash (any CSS color)",
+    "type": "string",
+    "placeholder": "#8b5cf6",
+    "conditions": [
+      {
+        "if": {
+          "property": "mod.searchenginesplash.open-color",
+          "value": "custom"
+        }
+      }
+    ]
+  },
+  {
+    "property": "mod.searchenginesplash.open-duration",
+    "label": "Opening splash duration (e.g. 900ms or 1.5s)",
+    "type": "string",
+    "placeholder": "900ms",
+    "conditions": [
+      {
+        "not": {
+          "property": "mod.searchenginesplash.open-splash",
+          "value": "off"
+        }
+      }
+    ]
+  }
+]
